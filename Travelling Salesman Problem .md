@@ -1,35 +1,90 @@
-# Ex. No: 18D - Travelling Salesman Problem (TSP)
+# Experiment 11(d): Topological Sort
 
-## AIM:
-To write a Python program to find the shortest possible route that visits every city exactly once and returns to the starting point using the **Travelling Salesman Problem (TSP)** approach.
+## Aim
+To write a Python program to print the topological sorting of a Directed Acyclic Graph (DAG).
 
-## ALGORITHM:
+---
 
-**Step 1**: Start the program.
+## Algorithm
 
-**Step 2**: Input the number of cities and the distance matrix.
+1. **Create a graph**: 
+   - Represent the graph using an adjacency list where each node points to its adjacent nodes (edges).
 
-**Step 3**: Set the starting city (e.g., city `0`).
+2. **DFS Traversal**:
+   - Use a DFS approach to traverse the graph. Keep track of visited nodes to avoid revisiting them.
+   - For each node, explore all its neighbors recursively.
 
-**Step 4**: Generate all possible permutations of the remaining cities.
+3. **Departure Array**:
+   - Maintain an array to record the nodes in reverse order of their completion times. This will represent the topological order.
 
-**Step 5**: For each permutation:
-- Calculate the total cost of traveling through the permutation starting and ending at city `0`.
-- Keep track of the **minimum cost** and the corresponding route.
+4. **Topological Sort**:
+   - After DFS completion for all unvisited nodes, print the nodes in the reverse of the departure array to get the topological sorting.
 
-**Step 6**: Return the **route** and the **minimum cost**.
+5. **End the program**:
+   - Print the topological order of the nodes.
 
-**Step 7**: End the program.
+---
 
-## PYTHON PROGRAM
+## Program
 
 ```
-ENTER YOUR CODE HERE
+# A Python3 program to print topological sorting of a DAG
+def addEdge(u, v):
+	global adj
+	adj[u].append(v)
+
+# The function to do DFS() and stores departure time
+# of all vertex
+def DFS(v):
+	global visited, departure, time
+	visited[v] = 1
+	for i in adj[v]:
+		if visited[i] == 0:
+			DFS(i)
+	departure[time] = v
+	time += 1
+
+# The function to do Topological Sort. It uses DFS().
+def topologicalSort():
+    for i in range(V):
+        if visited[i]==0:
+            DFS(i)
+            
+    for i in range(V-1,-1,-1):
+        print(departure[i],end=" ")
+
+#.....
+
+
+#Code Here
+
+
+#.....
+
+
+
+
+
+# Driver code
+if __name__ == '__main__':
+
+	# Create a graph given in the above diagram
+	V,time, adj, visited, departure = 6, 0, [[] for i in range(7)], [0 for i in range(7)],[-1 for i in range(7)]
+	addEdge(5, 2)
+	addEdge(5, 0)
+	addEdge(4, 0)
+	addEdge(4, 1)
+	addEdge(2, 3)
+	addEdge(3, 1)
+
+	print("Topological Sort of the given graph is")
+	topologicalSort()
+
+
 ```
 
 ## OUTPUT
-```
-```
+![Screenshot (276)](https://github.com/user-attachments/assets/76b51cd0-dcd3-483e-b5ad-70542ce196c0)
 
-##RESULT
-
+## RESULT
+Thus the python program was initialised and executed successfully.
