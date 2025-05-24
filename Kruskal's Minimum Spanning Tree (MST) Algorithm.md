@@ -1,31 +1,106 @@
-# Ex. No: 18B - Kruskal's Minimum Spanning Tree (MST) Algorithm
+# Experiment 11(c): DFS Traversal
 
-## AIM:
-To write a Python program for **Kruskal's algorithm** to find the Minimum Spanning Tree (MST) of a given connected, undirected, and weighted graph.
+## Aim
+To write a Python program to print DFS (Depth-First Search) traversal from a given source vertex in a graph.
 
-## ALGORITHM:
+---
 
-**Step 1**: Sort all the edges of the graph in non-decreasing order of their weights.
+## Algorithm
 
-**Step 2**: Initialize the `parent[]` and `rank[]` arrays for each vertex to keep track of the disjoint sets.
+1. **Start the program**:
+   - Create a graph using an adjacency list representation.
+   - Add edges between vertices using the `addEdge()` function.
 
-**Step 3**: Iterate through the sorted edges and pick the smallest edge. Check whether including this edge will form a cycle using the union-find method:
-- If the vertices of the edge belong to different sets, include it in the MST.
-- Perform a union of these two sets.
+2. **Implement the DFSUtil function**:
+   - This function will recursively visit and print each unvisited vertex.
+   - Mark the current vertex as visited.
+   - Recursively call `DFSUtil()` for each unvisited adjacent vertex.
 
-**Step 4**: Repeat Step 3 until the MST contains exactly `V-1` edges.
+3. **DFS function**:
+   - Initialize an empty set to keep track of visited vertices.
+   - Call the `DFSUtil()` function starting from the given vertex.
 
-**Step 5**: Print the edges included in the MST and the total minimum cost.
+4. **Input**:
+   - The user provides the starting vertex for the DFS traversal.
 
-## PYTHON PROGRAM
+5. **Perform DFS traversal**:
+   - Start from the given source vertex and traverse all reachable vertices using DFS.
+   - Print the vertices in the DFS order.
+
+6. **End the program**:
+   - The program outputs the order of vertices visited during the DFS traversal.
+
+---
+
+## Program
 
 ```
-ENTER YOUR CODE HERE
+# Python3 program to print DFS traversal
+# from a given graph
+from collections import defaultdict
+
+# This class represents a directed graph using
+# adjacency list representation
+
+
+class Graph:
+
+	# Constructor
+	def __init__(self):
+
+		# default dictionary to store graph
+		self.graph = defaultdict(list)
+
+	# function to add an edge to graph
+	def addEdge(self, u, v):
+		self.graph[u].append(v)
+
+	# A function used by DFS
+	def DFSUtil(self, v, visited):
+
+		# Mark the current node as visited
+		# and print it
+		visited.add(v)
+		
+		print(v,end=" ")
+		for i in self.graph[v]:
+		    if i not in visited:
+		        self.DFSUtil(i,visited)
+		
+		
+	# The function to do DFS traversal. It uses
+	# recursive DFSUtil()
+	def DFS(self, v):
+
+		# Create a set to store visited vertices
+		visited = set()
+
+		# Call the recursive helper function
+		# to print DFS traversal
+		self.DFSUtil(v, visited)
+
+# Driver code
+
+
+# Create a graph given
+# in the above diagram
+n=int(input())
+g = Graph()
+g.addEdge(0, 1)
+g.addEdge(0, 2)
+g.addEdge(1, 2)
+g.addEdge(2, 0)
+g.addEdge(2, 3)
+g.addEdge(3, 3)
+
+print("Following is DFS from (starting from vertex {})".format(n))
+g.DFS(n)
+
 ```
 
 ## OUTPUT
-`````
-`````
+![Screenshot (275)](https://github.com/user-attachments/assets/13069706-13c0-4188-bc80-8a91ce03f4ec)
+
 
 ## RESULT
-
+Thus the python program was initialised and executed successfully.
