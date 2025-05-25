@@ -1,90 +1,80 @@
-# Experiment 11(d): Topological Sort
+# Ex. No: 18D - Travelling Salesman Problem (TSP)
 
-## Aim
-To write a Python program to print the topological sorting of a Directed Acyclic Graph (DAG).
+## AIM:
+To write a Python program to find the shortest possible route that visits every city exactly once and returns to the starting point using the **Travelling Salesman Problem (TSP)** approach.
 
----
+## ALGORITHM:
 
-## Algorithm
+**Step 1**: Start the program.
 
-1. **Create a graph**: 
-   - Represent the graph using an adjacency list where each node points to its adjacent nodes (edges).
+**Step 2**: Input the number of cities and the distance matrix.
 
-2. **DFS Traversal**:
-   - Use a DFS approach to traverse the graph. Keep track of visited nodes to avoid revisiting them.
-   - For each node, explore all its neighbors recursively.
+**Step 3**: Set the starting city (e.g., city `0`).
 
-3. **Departure Array**:
-   - Maintain an array to record the nodes in reverse order of their completion times. This will represent the topological order.
+**Step 4**: Generate all possible permutations of the remaining cities.
 
-4. **Topological Sort**:
-   - After DFS completion for all unvisited nodes, print the nodes in the reverse of the departure array to get the topological sorting.
+**Step 5**: For each permutation:
+- Calculate the total cost of traveling through the permutation starting and ending at city `0`.
+- Keep track of the **minimum cost** and the corresponding route.
 
-5. **End the program**:
-   - Print the topological order of the nodes.
+**Step 6**: Return the **route** and the **minimum cost**.
 
----
+**Step 7**: End the program.
 
-## Program
+## PYTHON PROGRAM
 
 ```
-# A Python3 program to print topological sorting of a DAG
-def addEdge(u, v):
-	global adj
-	adj[u].append(v)
+# Python3 program to implement traveling salesman
+# problem using naive approach.
+from sys import maxsize
+from itertools import permutations
+V = 4
 
-# The function to do DFS() and stores departure time
-# of all vertex
-def DFS(v):
-	global visited, departure, time
-	visited[v] = 1
-	for i in adj[v]:
-		if visited[i] == 0:
-			DFS(i)
-	departure[time] = v
-	time += 1
+# implementation of traveling Salesman Problem
+def travellingSalesmanProblem(graph, s):
 
-# The function to do Topological Sort. It uses DFS().
-def topologicalSort():
-    for i in range(V):
-        if visited[i]==0:
-            DFS(i)
-            
-    for i in range(V-1,-1,-1):
-        print(departure[i],end=" ")
+	# store all vertex apart from source vertex
+	vertex = []
+	for i in range(V):
+		if i != s:
+			vertex.append(i)
 
-#.....
+	# store minimum weight Hamiltonian Cycle
+	min_path = maxsize
+	next_permutation=permutations(vertex)
+	for i in next_permutation:
 
+		# store current Path weight(cost)
+		current_pathweight = 0
 
-#Code Here
+		# compute current path weight
+		k = s
+		for j in i:
+			current_pathweight += graph[k][j]
+			k = j
+		current_pathweight += graph[k][s]
 
-
-#.....
-
-
-
+		# update minimum
+		min_path = min(min_path, current_pathweight)
+		
+	return min_path
 
 
-# Driver code
-if __name__ == '__main__':
+# Driver Code
+if __name__ == "__main__":
 
-	# Create a graph given in the above diagram
-	V,time, adj, visited, departure = 6, 0, [[] for i in range(7)], [0 for i in range(7)],[-1 for i in range(7)]
-	addEdge(5, 2)
-	addEdge(5, 0)
-	addEdge(4, 0)
-	addEdge(4, 1)
-	addEdge(2, 3)
-	addEdge(3, 1)
-
-	print("Topological Sort of the given graph is")
-	topologicalSort()
+	# matrix representation of graph
+	graph = [[0, 10, 15, 20], [10, 0, 35, 25],
+			[15, 35, 0, 30], [20, 25, 30, 0]]
+	s = int(input())
+	print(travellingSalesmanProblem(graph, s))
 
 
 ```
 
 ## OUTPUT
-![Screenshot (276)](https://github.com/user-attachments/assets/76b51cd0-dcd3-483e-b5ad-70542ce196c0)
+![Screenshot (281)](https://github.com/user-attachments/assets/e95761e9-fd20-4f90-a904-ddf64b6c8e35)
+
 
 ## RESULT
 Thus the python program was initialised and executed successfully.
