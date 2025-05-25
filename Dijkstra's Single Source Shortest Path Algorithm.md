@@ -1,99 +1,154 @@
-# Experiment 11(b): BFS Traversal
+# Ex. No: 18E - KRUSKAL’S ALGORITHM FOR MINIMUM SPANNING TREE (MST) IN PYTHON
 
-## Aim
-To write a Python program to print the BFS (Breadth-First Search) traversal from a given source vertex in a graph.
+## AIM:
+To write a Python program using Kruskal’s Algorithm to find the Minimum Spanning Tree (MST) of a given connected, undirected, and weighted graph.
 
----
+## ALGORITHM:
 
-## Algorithm
+Input the number of vertices and edges of the graph.
 
-1. **Start the program**:
-   - Create a graph using an adjacency list representation.
-   - Add edges between vertices using the `addEdge()` function.
+Create a list of edges, where each edge is represented as a tuple: (u, v, weight).
 
-2. **Implement the BFS function**:
-   - Initialize all vertices as not visited.
-   - Use a queue to track the vertices for traversal.
-   - Mark the starting vertex as visited and enqueue it.
-   - Dequeue a vertex, process it, and enqueue all its adjacent unvisited vertices while marking them as visited.
+Sort all edges in non-decreasing order based on their weights.
 
-3. **Input**:
-   - The user provides the starting vertex for the BFS traversal.
+Initialize the parent and rank arrays for union-find operations:
 
-4. **Perform BFS traversal**:
-   - Start from the given source vertex and traverse all reachable vertices using BFS.
-   - Print the vertices in the BFS order.
+parent[i] = i for each vertex.
 
-5. **End the program**:
-   - The program outputs the order of vertices visited during the BFS traversal.
+rank[i] = 0 initially.
 
----
+Iterate over the sorted edges and for each edge:
 
-## Program
+Use the find() function to check the root parents of the two vertices.
+
+If they belong to different sets, include the edge in MST and perform union operation to merge the sets.
+
+Repeat the above step until the MST has V - 1 edges (where V is the number of vertices).
+
+Display the edges in the MST and calculate the total weight (cost) of the MST.
+
+## PYTHON PROGRAM
 
 ```
 from collections import defaultdict
 
-# This class represents a directed graph
-# using adjacency list representation
+# Class to represent a graph
+
+
 class Graph:
 
-	# Constructor
-	def __init__(self):
-
-		# default dictionary to store graph
-		self.graph = defaultdict(list)
+	def __init__(self, vertices):
+		self.V = vertices # No. of vertices
+		self.graph = [] # default dictionary
+		# to store graph
 
 	# function to add an edge to graph
-	def addEdge(self,u,v):
-		self.graph[u].append(v)
+	def addEdge(self, u, v, w):
+		self.graph.append([u, v, w])
 
-	# Function to print a BFS of graph
-	def BFS(self, s):
+	# A utility function to find set of an element i
+	# (uses path compression technique)
+	def find(self, parent, i):
+		if parent[i] == i:
+			return i
+		return self.find(parent, parent[i])
 
-		# Mark all the vertices as not visited
-		visited = [False] * (max(self.graph) + 1)
+	# A function that does union of two sets of x and y
+	# (uses union by rank)
+	def union(self, parent, rank, x, y):
+		xroot = self.find(parent, x)
+		yroot = self.find(parent, y)
 
-		# Create a queue for BFS
-		queue = []
+		# Attach smaller rank tree under root of
+		# high rank tree (Union by Rank)
+		if rank[xroot] < rank[yroot]:
+			parent[xroot] = yroot
+		elif rank[xroot] > rank[yroot]:
+			parent[yroot] = xroot
 
-		# Mark the source node as
-		# visited and enqueue it
-		queue.append(s)
-		visited[s] = True
+		# If ranks are same, then make one as root
+		# and increment its rank by one
+		else:
+			parent[yroot] = xroot
+			rank[xroot] += 1
 
-		while queue:
-		    s=queue.pop(0)
-		    print(s,end=" ")
+	# The main function to construct MST using Kruskal's
+		# algorithm
+	def KruskalMST(self):
+
+		result = [] # This will store the resultant MST
+		
+		# An index variable, used for sorted edges
+		i = 0
+		
+		# An index variable, used for result[]
+		e = 0
+
+		# Step 1: Sort all the edges in
+		# non-decreasing order of their
+		# weight. If we are not allowed to change the
+		# given graph, we can create a copy of graph
+		self.graph = sorted(self.graph,
+							key=lambda item: item[2])
+
+		parent = []
+		rank = []
+
+		# Create V subsets with single elements
+		for node in range(self.V):
+		    parent.append(node)
+		    rank.append(0)
+		     #---Code Here----
+		
+		# Number of edges to be taken is equal to V-1
+		while e<self.V-1:
+		    u,v,w=self.graph[i]
+		    i+=1
+		    x=self.find(parent,u)
+		    y=self.find(parent,v)
+		    if x!=y:
+		        e+=1
+		        result.append([u,v,w])
+		        self.union(parent,rank,x,y)
+		minimumCost=0
+		print("Edges in the constructed MST")
+		for u,v,weight in result:
+		    minimumCost+=weight
+		    print("%d -- %d == %d"%(u,v,weight))
+		print("Minimum Spanning Tree",minimumCost)
 		    
-		    for i in self.graph[s]:
-		        if visited[i]==False:
-		            queue.append(i)
-		            visited[i]=True
-		
-		
-		
+
+			# Step 2: Pick the smallest edge and increment
+			# the index for next iteration
+			        
+			        #---Code Here----
+
+			# If including this edge doesn't
+			# cause cycle, include it in result
+			# and increment the indexof result
+			# for next edge
+			            
+			            
+			            #---Code Here----
+
 		
 
-# Create a graph given in
-# the above diagram
-n=int(input())
-g = Graph()
-g.addEdge(0, 1)
-g.addEdge(0, 2)
-g.addEdge(1, 2)
-g.addEdge(2, 0)
-g.addEdge(2, 3)
-g.addEdge(3, 3)
+# Driver code
+g = Graph(4)
+g.addEdge(0, 1, 10)
+g.addEdge(0, 2, 6)
+g.addEdge(0, 3, 5)
+g.addEdge(1, 3, 15)
+g.addEdge(2, 3, 4)
 
-print ("Following is Breadth First Traversal"
-				" (starting from vertex {})".format(n))
-g.BFS(n)
+# Function call
+g.KruskalMST()
+
 
 ```
 
 ## OUTPUT
-![Screenshot (274)](https://github.com/user-attachments/assets/968bac56-37a8-4595-b8bb-ac598b276693)
+![Screenshot (282)](https://github.com/user-attachments/assets/ea00e8d1-8809-4c02-a39f-6d9ee454a193)
 
 
 ## RESULT
