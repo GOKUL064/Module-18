@@ -1,105 +1,103 @@
-# Experiment 11(e): Adjacency List Representation of a Graph
+# Ex. No: 18C - Dijkstra's Single Source Shortest Path Algorithm
 
-## Aim
-To write a Python program to demonstrate the adjacency list representation of a given graph.
+## AIM:
+To write a Python program for **Dijkstra's single source shortest path algorithm**.
 
----
+## ALGORITHM:
 
-## Algorithm
+**Step 1**: Initialize a `distance[]` array with infinity for all vertices except the source, which is set to `0`.  
+Create a `sptSet[]` array (shortest path tree set) to keep track of vertices whose shortest distance from the source is finalized.
 
-1. **Create a Node Class**:
-   - Define a class `AdjNode` to represent each node in the adjacency list:
-     - Store the vertex number.
-     - Store a reference to the next adjacent node.
+**Step 2**: Pick the vertex `u` with the minimum distance value from the set of vertices not yet processed.
 
-2. **Graph Class**:
-   - Define a class `Graph` to represent the graph using an adjacency list:
-     - Initialize the number of vertices and create an array to store the adjacency lists.
-   
-3. **Add an Edge**:
-   - Define a method `add_edge(src, dest)` to add an edge between two vertices:
-     - Add `dest` to the adjacency list of `src`.
-     - Add `src` to the adjacency list of `dest` (for undirected graphs).
-   
-4. **Print the Graph**:
-   - Define a method `print_graph()` to print the graph:
-     - Traverse each vertex’s adjacency list and print the vertex along with its adjacent nodes.
+**Step 3**: For every adjacent vertex `v` of the picked vertex `u`, if the current distance to `v` is greater than the distance to `u` plus the edge weight `(u, v)`, then update the distance of `v`.
 
-5. **Main Program**:
-   - Create a graph object with `V` vertices.
-   - Add edges using the `add_edge()` method.
-   - Print the adjacency list representation using `print_graph()`.
+**Step 4**: Mark the vertex `u` as processed in `sptSet`.
 
----
+**Step 5**: Repeat Steps 2–4 until all vertices are processed.
 
-## Program
+**Step 6**: Print the shortest distances from the source to all other vertices.
+
+## PYTHON PROGRAM
 
 ```
-class AdjNode:
-	def __init__(self, data):
-		self.vertex = data
-		self.next = None
+# Python program for Dijkstra's single source shortest path algorithm. 
+# The program is for adjacency matrix representation of the graph
 
+# Library for INT_MAX
+import sys
 
-# A class to represent a graph. A graph
-# is the list of the adjacency lists.
-# Size of the array will be the no. of the
-# vertices "V"
-class Graph:
+class Graph():
+
 	def __init__(self, vertices):
 		self.V = vertices
-		self.graph = [None] * self.V
+		self.graph = [[0 for column in range(vertices)]
+					for row in range(vertices)]
 
-	# Function to add an edge in an undirected graph
-	def add_edge(self, src, dest):
-		# Adding the node to the source node
-		node = AdjNode(dest)
-		node.next = self.graph[src]
-		self.graph[src] = node
+	def printSolution(self, dist):
+		print("Vertex   Distance from Source")
+		for node in range(self.V):
+			print(node, "           ", dist[node])
 
-		# Adding the source node to the destination as
-		# it is the undirected graph
-		node = AdjNode(src)
-		node.next = self.graph[dest]
-		self.graph[dest] = node
+	# A utility function to find the vertex with
+	# minimum distance value, from the set of vertices
+	# not yet included in shortest path tree
+	def minDistance(self, dist, sptSet):
 
-	
-	def print_graph(self):
-	    for i in range(V):
-	        print(f"Adjacency list of vertex {i}\n head",end=" ")
-	        temp=self.graph[i]
-	        while temp:
-	            print(f"-> {temp.vertex}",end=" ")
-	            temp=temp.next
-	        print("\n")
-	            
-		
-		
-		#Write Code here
+		# Initialize minimum distance for next node
+		min = sys.maxsize
+
+		# Search not nearest vertex not in the
+		# shortest path tree
+		for u in range(self.V):
+			if dist[u] < min and sptSet[u] == False:
+				min = dist[u]
+				min_index = u
+
+		return min_index
+
+	# Function that implements Dijkstra's single source
+	# shortest path algorithm for a graph represented
+	# using adjacency matrix representation
+	def dijkstra(self, src):
+
+		dist = [sys.maxsize] * self.V
+		dist[src] = 0
+		sptSet = [False] * self.V
+
+		for cout in range(self.V):
+		    x=self.minDistance(dist,sptSet)
+		    sptSet[x]=True
+		    for y in range(self.V):
+		        if self.graph[x][y]>0 and sptSet[y]==False and dist[y]>self.graph[x][y]+dist[x]:
+		            dist[y]=self.graph[x][y]+dist[x]
+			
+
+		self.printSolution(dist)
+
+# Driver program
+g = Graph(9)
+g.graph = [[0, 4, 0, 0, 0, 0, 0, 8, 0],
+		[4, 0, 8, 0, 0, 0, 0, 11, 0],
+		[0, 8, 0, 7, 0, 4, 0, 0, 2],
+		[0, 0, 7, 0, 6, 14, 0, 0, 0],
+		[0, 0, 0, 6, 0, 5, 0, 0, 0],
+		[0, 0, 4, 14, 5, 0, 2, 0, 0],
+		[0, 0, 0, 0, 0, 2, 0, 1, 6],
+		[8, 11, 0, 0, 0, 0, 1, 0, 7],
+		[0, 0, 2, 0, 0, 0, 6, 7, 0]
+		];
+
+g.dijkstra(0);
 
 
-
-
-
-# Driver program to the above graph class
-if __name__ == "__main__":
-	V = 5
-	graph = Graph(V)
-	graph.add_edge(0, 1)
-	graph.add_edge(0, 4)
-	graph.add_edge(1, 2)
-	graph.add_edge(1, 3)
-	graph.add_edge(1, 4)
-	graph.add_edge(2, 3)
-	graph.add_edge(3, 4)
-
-	graph.print_graph()
 
 
 ```
 
 ## OUTPUT
-![Screenshot (277)](https://github.com/user-attachments/assets/139b603f-43b9-406a-a31e-ac142ec4258f)
+![Screenshot (280)](https://github.com/user-attachments/assets/b110b9d9-6aa9-4b8f-bab7-1bf06dc0d196)
+
 
 ## RESULT
 Thus the python program was initialised and executed successfully.
