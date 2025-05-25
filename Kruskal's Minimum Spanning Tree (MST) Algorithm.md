@@ -1,105 +1,135 @@
-# Experiment 11(c): DFS Traversal
+# Ex. No: 18B - Kruskal's Minimum Spanning Tree (MST) Algorithm
 
-## Aim
-To write a Python program to print DFS (Depth-First Search) traversal from a given source vertex in a graph.
+## AIM:
+To write a Python program for **Kruskal's algorithm** to find the Minimum Spanning Tree (MST) of a given connected, undirected, and weighted graph.
 
----
+## ALGORITHM:
 
-## Algorithm
+**Step 1**: Sort all the edges of the graph in non-decreasing order of their weights.
 
-1. **Start the program**:
-   - Create a graph using an adjacency list representation.
-   - Add edges between vertices using the `addEdge()` function.
+**Step 2**: Initialize the `parent[]` and `rank[]` arrays for each vertex to keep track of the disjoint sets.
 
-2. **Implement the DFSUtil function**:
-   - This function will recursively visit and print each unvisited vertex.
-   - Mark the current vertex as visited.
-   - Recursively call `DFSUtil()` for each unvisited adjacent vertex.
+**Step 3**: Iterate through the sorted edges and pick the smallest edge. Check whether including this edge will form a cycle using the union-find method:
+- If the vertices of the edge belong to different sets, include it in the MST.
+- Perform a union of these two sets.
 
-3. **DFS function**:
-   - Initialize an empty set to keep track of visited vertices.
-   - Call the `DFSUtil()` function starting from the given vertex.
+**Step 4**: Repeat Step 3 until the MST contains exactly `V-1` edges.
 
-4. **Input**:
-   - The user provides the starting vertex for the DFS traversal.
+**Step 5**: Print the edges included in the MST and the total minimum cost.
 
-5. **Perform DFS traversal**:
-   - Start from the given source vertex and traverse all reachable vertices using DFS.
-   - Print the vertices in the DFS order.
-
-6. **End the program**:
-   - The program outputs the order of vertices visited during the DFS traversal.
-
----
-
-## Program
+## PYTHON PROGRAM
 
 ```
-# Python3 program to print DFS traversal
-# from a given graph
+# Python program for Kruskal's algorithm to find
+# Minimum Spanning Tree of a given connected,
+# undirected and weighted graph
+
 from collections import defaultdict
 
-# This class represents a directed graph using
-# adjacency list representation
+# Class to represent a graph
 
 
 class Graph:
 
-	# Constructor
-	def __init__(self):
-
-		# default dictionary to store graph
-		self.graph = defaultdict(list)
+	def __init__(self, vertices):
+		self.V = vertices # No. of vertices
+		self.graph = [] # default dictionary
+		# to store graph
 
 	# function to add an edge to graph
-	def addEdge(self, u, v):
-		self.graph[u].append(v)
+	def addEdge(self, u, v, w):
+		self.graph.append([u, v, w])
 
-	# A function used by DFS
-	def DFSUtil(self, v, visited):
+	# A utility function to find set of an element i
+	# (uses path compression technique)
+	def find(self, parent, i):
+		if parent[i] == i:
+			return i
+		return self.find(parent, parent[i])
 
-		# Mark the current node as visited
-		# and print it
-		visited.add(v)
+	# A function that does union of two sets of x and y
+	# (uses union by rank)
+	def union(self, parent, rank, x, y):
+		xroot = self.find(parent, x)
+		yroot = self.find(parent, y)
+
+		# Attach smaller rank tree under root of
+		# high rank tree (Union by Rank)
+		if rank[xroot] < rank[yroot]:
+			parent[xroot] = yroot
+		elif rank[xroot] > rank[yroot]:
+			parent[yroot] = xroot
+
+		# If ranks are same, then make one as root
+		# and increment its rank by one
+		else:
+			parent[yroot] = xroot
+			rank[xroot] += 1
+
+	# The main function to construct MST using Kruskal's
+		# algorithm
+	def KruskalMST(self):
+
+		result = [] # This will store the resultant MST
 		
-		print(v,end=" ")
-		for i in self.graph[v]:
-		    if i not in visited:
-		        self.DFSUtil(i,visited)
+		# An index variable, used for sorted edges
+		i = 0
 		
+		# An index variable, used for result[]
+		e = 0
+
+		# Step 1: Sort all the edges in
+		# non-decreasing order of their
+		# weight. If we are not allowed to change the
+		# given graph, we can create a copy of graph
+		self.graph = sorted(self.graph,
+							key=lambda item: item[2])
+
+		parent = []
+		rank = []
+
+		# Create V subsets with single elements
+		for node in range(self.V):
+		    parent.append(node)
+		    rank.append(0)
 		
-	# The function to do DFS traversal. It uses
-	# recursive DFSUtil()
-	def DFS(self, v):
+		# Number of edges to be taken is equal to V-1
+		
 
-		# Create a set to store visited vertices
-		visited = set()
-
-		# Call the recursive helper function
-		# to print DFS traversal
-		self.DFSUtil(v, visited)
+			# Step 2: Pick the smallest edge and increment
+			# the index for next iteration
+		while e<self.V-1:
+		    u,v,w=self.graph[i]
+		    i+=1
+		    x=self.find(parent,u)
+		    y=self.find(parent,v)
+		    if x!=y:
+		        e+=1
+		        result.append([u,v,w])
+		        self.union(parent,rank,x,y)
+		minimumCost=0
+		print("Edges in the constructed MST")
+		for u,v,weight in result:
+		    minimumCost+=weight
+		    print("%d -- %d == %d"%(u,v,weight))
+		print("Minimum Spanning Tree",minimumCost)
 
 # Driver code
+g = Graph(4)
+g.addEdge(0, 1, 10)
+g.addEdge(0, 2, 6)
+g.addEdge(0, 3, 5)
+g.addEdge(1, 3, 15)
+g.addEdge(2, 3, 4)
 
+# Function call
+g.KruskalMST()
 
-# Create a graph given
-# in the above diagram
-n=int(input())
-g = Graph()
-g.addEdge(0, 1)
-g.addEdge(0, 2)
-g.addEdge(1, 2)
-g.addEdge(2, 0)
-g.addEdge(2, 3)
-g.addEdge(3, 3)
-
-print("Following is DFS from (starting from vertex {})".format(n))
-g.DFS(n)
 
 ```
 
 ## OUTPUT
-![Screenshot (275)](https://github.com/user-attachments/assets/13069706-13c0-4188-bc80-8a91ce03f4ec)
+![Screenshot (279)](https://github.com/user-attachments/assets/e204834b-2de4-425c-95ad-4d7d2b4e74c5)
 
 
 ## RESULT
